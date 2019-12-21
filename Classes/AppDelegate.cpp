@@ -24,6 +24,7 @@
 
 #include "AppDelegate.h"
 #include "TitleScene.h"
+#include "SimpleAudioEngine.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -94,7 +95,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	FileUtils::getInstance()->addSearchPath("img");
 
 	// path(sound)
-
+	FileUtils::getInstance()->addSearchPath("bgm");
+	FileUtils::getInstance()->addSearchPath("soundEffect");
 
 
     // turn on display FPS

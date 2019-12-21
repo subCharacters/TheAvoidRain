@@ -1,5 +1,6 @@
 #include "TitleScene.h"
 #include "MainScene.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -27,6 +28,7 @@ bool TitleScene::init()
 		return false;
 	}
 
+
 	auto director = Director::getInstance();
 	auto winSize = director->getWinSize();
 
@@ -37,29 +39,26 @@ bool TitleScene::init()
 
 	// add to image
 	// start
-	auto start = Sprite::create("start.png");
-	start->setPosition(Vec2(winSize.width / 2.0f, 90.0f));
-	this->addChild(start);
+	auto delay = DelayTime::create(0.5f);
+	auto startButton = MenuItemImage::create("start.png", "start.png", [](Ref* ref) {
+		auto scene = MainScene::createScene();
+		auto transition = TransitionCrossFade::create(1.0f, scene);
+		
+		auto audioEngine = CocosDenshion::SimpleAudioEngine::getInstance();
+		audioEngine->playEffect("huh_.mp3");
 
-	// touch to move MainScene
-	auto listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = [this](Touch* touch, Event* event)
-	{
-		this->getEventDispatcher()->removeAllEventListeners();
+		Director::getInstance()->replaceScene(transition);
 
-		auto delay = DelayTime::create(0.0f);
+	});
+		this->runAction(Sequence::create(delay, startButton, NULL));
 
-		auto startGame = CallFunc::create([] {
-			auto scene = MainScene::createScene();
-			auto transition = TransitionPageTurn::create(0.5f, scene, true);
-			Director::getInstance()->replaceScene(transition);
-		});
+	// 메뉴 작성
+	auto menu = Menu::create(startButton, NULL);
+	menu->alignItemsVerticallyWithPadding(30);
+	menu->setPosition(Vec2(winSize.width / 2.0f, winSize.height / 2.0f));
+	this->addChild(menu);
 
-		this->runAction(Sequence::create(delay, startGame, NULL));
-		return true;
-	};
 
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	return true;
 }
